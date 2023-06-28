@@ -1,0 +1,9 @@
+apiVersion: plugin.halo.run/v1alpha1
+kind: ExtensionDefinition
+metadata:
+  name: webp-se-cloud-image-filter
+spec:
+  className: se.webp.plugin.WebpCloudContentHandler
+  extensionPointName: reactive-post-content-handler
+  displayName: "WebpCloudContentHandler"
+  description: "Webp.se Cloud Services"
