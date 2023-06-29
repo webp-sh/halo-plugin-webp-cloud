@@ -50,6 +50,5 @@ public class WebpCloudPostContentHandler implements ReactivePostContentHandler {
     @Data
     public static class BasicConfig {
         String proxy_address;
-        String api_key;
     }
 }
