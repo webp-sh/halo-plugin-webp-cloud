@@ -13,14 +13,14 @@ import run.halo.app.theme.ReactivePostContentHandler;
 
 @RequiredArgsConstructor
 @Component
-public class WebpCloudContentHandler implements ReactivePostContentHandler {
+public class WebpCloudPostContentHandler implements ReactivePostContentHandler {
 
     private final ReactiveSettingFetcher reactiveSettingFetcher;
 
     private final ExternalUrlSupplier externalUrlSupplier;
 
     @Override
-    public Mono<PostContent> handle(PostContent postContent) {
+    public Mono<PostContentContext> handle(PostContentContext postContent) {
         return reactiveSettingFetcher.fetch("basic", BasicConfig.class)
             .defaultIfEmpty(new BasicConfig())
             .map(basicConfig -> {
