@@ -1,5 +1,6 @@
 package se.webp.plugin;
 
+import java.net.URL;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
@@ -34,11 +35,15 @@ public class WebpCloudPostContentHandler implements ReactivePostContentHandler {
                         return;
                     }
 
-                    String externalUrl = externalUrlSupplier.get().toString();
+                    URL externalUrl = externalUrlSupplier.getRaw();
 
-                    if (src.startsWith(externalUrl)) {
+                    if(externalUrl == null) {
+                        return;
+                    }
+
+                    if (src.startsWith(externalUrl.toString())) {
                         img.attr("src",
-                            basicConfig.proxy_address + src.substring(externalUrl.length()));
+                            basicConfig.proxy_address + src.substring(externalUrl.toString().length()));
                     }
                 });
 
