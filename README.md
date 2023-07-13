@@ -1,6 +1,6 @@
 # WebP Cloud Halo plugin
 
-此插件提供对 WebP Cloud（<https://webp.se>）的集成，支持在文章页面无入侵式的自动替换图片为 WebP 格式。
+此插件提供对 WebP Cloud（<https://webp.se>）的集成，支持在文章页面无入侵式的自动替换图片为 WebP/AVIF 格式。
 
 ## 使用
 
@@ -25,3 +25,5 @@
 ![Plugin Setting](./images/plugin-webp-se-cloud-setting.png)
 
 最后，进入任意一篇包含图片的文章，检查一下浏览器的 Network 面板，就可以看到图片的源地址已经修改为了你设置的 `Proxy Address` 了。
+
+![Effect](./images/effect.png)
