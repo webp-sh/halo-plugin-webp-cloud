@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "io.freefair.lombok" version "8.0.1"
-    id "run.halo.plugin.devtools" version "0.0.5"
+    id "run.halo.plugin.devtools" version "0.0.9"
 }
 
 group 'se.webp.plugin'
@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation platform('run.halo.tools.platform:plugin:2.8.0-SNAPSHOT')
+    implementation platform('run.halo.tools.platform:plugin:2.13.0-SNAPSHOT')
     compileOnly 'run.halo.app:api'
 
     testImplementation 'run.halo.app:api'
@@ -24,4 +24,9 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+halo {
+    imageName = "docker.1panel.live/halohub/halo"
+    version = "2.17"
 }
