@@ -1,6 +1,7 @@
 import { definePlugin } from "@halo-dev/console-shared";
 import { markRaw } from "vue";
 import SettingsTab from "./components/SettingsTab.vue";
+import "./styles/index.css";
 
 export default definePlugin({
   components: {},
