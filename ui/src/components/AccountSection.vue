@@ -29,25 +29,21 @@ const { data: user, isFetching } = useQuery({
   <VLoading v-if="isLoading || isFetching" />
   <div
     v-else
-    class="webp-se-ring-gray-100 webp-se-relative webp-se-flex-wrap webp-se-gap-2 webp-se-flex webp-se-justify-between webp-se-items-center webp-se-ring-1 webp-se-p-2 hover:webp-se-ring-inherit webp-se-transition-all webp-se-rounded-lg"
+    class="ring-gray-100 relative flex-wrap gap-2 flex justify-between items-center ring-1 p-2 hover:ring-inherit transition-all rounded-lg"
   >
     <div
       v-if="user?.data"
-      class="webp-se-absolute -webp-se-top-3 -webp-se-right-3 webp-se-bg-indigo-500 webp-se-rounded-xl webp-se-px-2 webp-se-text-xs webp-se-py-0.5 webp-se-text-white"
+      class="absolute -top-3 -right-3 bg-indigo-500 rounded-xl px-2 text-xs py-0.5 text-white"
     >
       {{ user.data.user_plan.toUpperCase() }}
     </div>
-    <div
-      class="webp-se-flex webp-se-gap-3 webp-se-items-center webp-se-flex-wrap"
-    >
+    <div class="flex gap-3 items-center flex-wrap">
       <VAvatar :src="user?.data?.avatar_url" size="lg" :alt="user?.data.name" />
-      <div class="webp-se-flex webp-se-flex-col webp-se-space-y-1">
-        <span
-          class="webp-se-text-sm webp-se-text-gray-900 webp-se-font-semibold"
-        >
+      <div class="flex flex-col space-y-1">
+        <span class="text-sm text-gray-900 font-semibold">
           {{ user?.data.name || "请先绑定 webp.se 的帐号" }}
         </span>
-        <span class="webp-se-text-xs webp-se-text-gray-600">
+        <span class="text-xs text-gray-600">
           {{ user?.data.user_uuid || "--" }}
         </span>
       </div>

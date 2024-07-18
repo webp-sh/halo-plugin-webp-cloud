@@ -100,36 +100,32 @@ async function handleSave() {
 
 <template>
   <div v-if="apiKey">
-    <h2 class="webp-se-text-sm webp-se-font-semibold webp-se-text-gray-900">
-      选择代理：
-    </h2>
-    <div class="webp-se-flex webp-se-mt-2 webp-se-justify-end">
+    <h2 class="text-sm font-semibold text-gray-900">选择代理：</h2>
+    <div class="flex mt-2 justify-end">
       <VButton>新建</VButton>
     </div>
-    <div class="webp-se-flex webp-se-space-y-2 webp-se-flex-col webp-se-mt-3">
+    <div class="flex space-y-2 flex-col mt-3">
       <label
         v-for="proxy in proxies?.data"
         :key="proxy.proxy_uuid"
         :for="proxy.proxy_uuid"
-        class="webp-se-ring-1 webp-se-relative webp-se-ring-gray-100 webp-se-rounded-lg webp-se-p-3 webp-se-cursor-pointer webp-se-transition-all webp-se-flex has-[:checked]:webp-se-ring-inherit"
+        class="ring-1 relative ring-gray-100 rounded-lg p-3 cursor-pointer transition-all flex has-[:checked]:ring-inherit"
       >
-        <div
-          class="webp-se-flex-1 webp-se-flex webp-se-space-y-1.5 webp-se-flex-col webp-se-shrink webp-se-min-w-0"
-        >
-          <span class="webp-se-text-gray-900 webp-se-font-semibold">
+        <div class="flex-1 flex space-y-1.5 flex-col shrink min-w-0">
+          <span class="text-gray-900 font-semibold">
             {{ proxy.proxy_name }}
           </span>
-          <span class="webp-se-text-xs webp-se-text-gray-600">
+          <span class="text-xs text-gray-600">
             代理地址：{{ proxy.proxy_proxy_url }}
           </span>
-          <span class="webp-se-text-xs webp-se-text-gray-600">
+          <span class="text-xs text-gray-600">
             源站地址：{{ proxy.proxy_origin_url }}
           </span>
-          <span class="webp-se-text-xs webp-se-text-gray-600">
+          <span class="text-xs text-gray-600">
             地区：{{ proxy.proxy_region }}
           </span>
         </div>
-        <div class="webp-se-flex-none">
+        <div class="flex-none">
           <input
             :id="proxy.proxy_uuid"
             v-model="selectedProxies"
@@ -140,7 +136,7 @@ async function handleSave() {
       </label>
     </div>
 
-    <div class="webp-se-mt-5">
+    <div class="mt-5">
       <VButton type="secondary" :loading="isSubmitting" @click="handleSave">
         保存
       </VButton>

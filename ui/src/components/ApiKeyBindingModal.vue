@@ -119,6 +119,7 @@ async function onSubmit(data: { apiKeySecret: string }) {
 
     <template #footer>
       <VSpace>
+        <!-- @vue-ignore -->
         <VButton
           type="secondary"
           :loading="isSubmitting"
