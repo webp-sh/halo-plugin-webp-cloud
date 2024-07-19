@@ -1,29 +1,42 @@
 <script lang="ts" setup>
-import { useFetchApiKey } from "@/hooks/use-fetch-api-key";
+import type {
+  PluginConfigMapBasic,
+  PluginConfigMapProxy,
+  WebpCloudProxy,
+  WebpCloudResponse,
+} from "@/types";
+import { fetchApiKey } from "@/utils/fetch-api-key";
 import { consoleApiClient } from "@halo-dev/api-client";
 import { Toast, VButton } from "@halo-dev/components";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import axios from "axios";
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 
 const queryClient = useQueryClient();
 
-const { data: apiKey } = useFetchApiKey();
-
-const { data: proxies } = useQuery({
+const { data: proxies, suspense } = useQuery({
   queryKey: ["plugin-webp-se-cloud:remote-proxies"],
   queryFn: async () => {
-    // TODO: Refine type definition
-    const { data } = await axios.get("https://webppt.webp.se/v1/proxy", {
-      headers: {
-        "api-key": apiKey.value,
+    const apiKey = await fetchApiKey();
+
+    if (!apiKey) {
+      return null;
+    }
+
+    const { data } = await axios.get<WebpCloudResponse<WebpCloudProxy[]>>(
+      "https://webppt.webp.se/v1/proxy",
+      {
+        headers: {
+          "api-key": apiKey,
+        },
       },
-    });
+    );
     return data;
   },
   cacheTime: 0,
-  enabled: computed(() => !!apiKey.value),
 });
+
+await suspense();
 
 const selectedProxies = ref<string[]>([]);
 
@@ -35,7 +48,9 @@ const { data: storedProxies } = useQuery({
         name: "plugin-webp-se-cloud",
       });
 
-    const configMapData = JSON.parse(configMap.data?.["basic"] || "{}");
+    const configMapData = JSON.parse(
+      configMap.data?.["basic"] || "{}",
+    ) as PluginConfigMapBasic;
 
     return configMapData["proxies"] || [];
   },
@@ -44,7 +59,6 @@ const { data: storedProxies } = useQuery({
 watch(
   () => storedProxies.value,
   (value) => {
-    // TODO: Refine type definition
     const proxyUrls = value?.map((proxy: any) => proxy.proxy_url);
 
     selectedProxies.value = proxyUrls || [];
@@ -59,21 +73,23 @@ const isSubmitting = ref(false);
 async function handleSave() {
   isSubmitting.value = true;
 
-  const proxiesToSave = proxies.value.data
-    .filter((proxy: any) =>
+  const proxiesToSave = proxies.value?.data
+    .filter((proxy: WebpCloudProxy) =>
       selectedProxies.value.includes(proxy.proxy_proxy_url),
     )
-    .map((proxy: any) => ({
+    .map((proxy: WebpCloudProxy) => ({
       proxy_url: proxy.proxy_proxy_url,
       origin_url: proxy.proxy_origin_url,
-    }));
+    })) as PluginConfigMapProxy[];
 
   const { data: configMapToUpdate } =
     await consoleApiClient.plugin.plugin.fetchPluginConfig({
       name: "plugin-webp-se-cloud",
     });
 
-  const configMapData = JSON.parse(configMapToUpdate.data?.["basic"] || "{}");
+  const configMapData = JSON.parse(
+    configMapToUpdate.data?.["basic"] || "{}",
+  ) as PluginConfigMapBasic;
 
   configMapData["proxies"] = proxiesToSave;
 
@@ -99,19 +115,19 @@ async function handleSave() {
 </script>
 
 <template>
-  <div v-if="apiKey">
-    <h2 class="text-sm font-semibold text-gray-900">选择代理：</h2>
-    <div class="flex mt-2 justify-end">
+  <div v-if="proxies" class="mt-3 border-t border-gray-50 pt-3">
+    <h2 class="text-sm text-gray-900 font-semibold">选择代理：</h2>
+    <div class="mt-2 flex justify-end">
       <VButton>新建</VButton>
     </div>
-    <div class="flex space-y-2 flex-col mt-3">
+    <div class="mt-3 flex flex-col space-y-2">
       <label
         v-for="proxy in proxies?.data"
         :key="proxy.proxy_uuid"
         :for="proxy.proxy_uuid"
-        class="ring-1 relative ring-gray-100 rounded-lg p-3 cursor-pointer transition-all flex has-[:checked]:ring-inherit"
+        class="relative flex cursor-pointer rounded-lg p-3 ring-1 ring-gray-100 transition-all has-[:checked]:ring-inherit"
       >
-        <div class="flex-1 flex space-y-1.5 flex-col shrink min-w-0">
+        <div class="min-w-0 flex flex-1 shrink flex-col space-y-1.5">
           <span class="text-gray-900 font-semibold">
             {{ proxy.proxy_name }}
           </span>

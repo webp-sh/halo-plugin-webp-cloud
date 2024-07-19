@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { PluginConfigMapBasic } from "@/types";
 import {
   consoleApiClient,
   coreApiClient,
@@ -30,7 +31,9 @@ const { data: configMap } = useQuery({
 });
 
 const storedApiKeySecret = computed(() => {
-  const configMapData = JSON.parse(configMap.value?.data?.["basic"] || "{}");
+  const configMapData = JSON.parse(
+    configMap.value?.data?.["basic"] || "{}",
+  ) as PluginConfigMapBasic;
   return configMapData["apiKeySecret"];
 });
 
@@ -65,7 +68,7 @@ async function onSubmit(data: { apiKeySecret: string }) {
         });
       const basicConfig = JSON.parse(
         configMapToUpdate?.data?.["basic"] || "{}",
-      );
+      ) as PluginConfigMapBasic;
       basicConfig.apiKeySecret = data.apiKeySecret;
       configMapToUpdate.data = {
         ...configMapToUpdate.data,
@@ -79,7 +82,13 @@ async function onSubmit(data: { apiKeySecret: string }) {
     }
 
     queryClient.invalidateQueries({
-      queryKey: ["plugin-webp-se-cloud:api-key"],
+      queryKey: ["plugin-webp-se-cloud:user"],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["plugin-webp-se-cloud:remote-proxies"],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["plugin-webp-se-cloud:stored-proxies"],
     });
 
     modal.value?.close();

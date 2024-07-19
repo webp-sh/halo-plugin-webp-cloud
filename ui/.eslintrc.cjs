@@ -8,11 +8,15 @@ module.exports = {
     "eslint:recommended",
     "@vue/eslint-config-typescript/recommended",
     "@vue/eslint-config-prettier",
+    "@unocss",
   ],
   parserOptions: {
     ecmaVersion: "latest",
   },
   env: {
     "vue/setup-compiler-macros": true,
+  },
+  rules: {
+    "@typescript-eslint/no-explicit-any": "off",
   },
 };

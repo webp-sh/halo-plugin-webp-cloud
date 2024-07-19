@@ -1,6 +1,5 @@
 import { HaloUIPluginBundlerKit } from "@halo-dev/ui-plugin-bundler-kit";
 import Vue from "@vitejs/plugin-vue";
-import { presetUno } from "unocss";
 import UnoCSS from "unocss/vite";
 import Icons from "unplugin-icons/vite";
 import { fileURLToPath, URL } from "url";
@@ -12,7 +11,7 @@ export default defineConfig({
     Icons({ compiler: "vue3" }),
     UnoCSS({
       mode: "vue-scoped",
-      presets: [presetUno()],
+      configFile: "./uno.config.ts",
     }),
     HaloUIPluginBundlerKit(),
   ],

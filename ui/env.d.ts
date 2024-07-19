@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 /// <reference types="unplugin-icons/types/vue" />
 
-export { };
+export {};
 
 declare module "axios" {
   export interface AxiosRequestConfig {

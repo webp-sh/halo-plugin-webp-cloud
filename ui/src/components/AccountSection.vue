@@ -1,43 +1,50 @@
 <script lang="ts" setup>
-import { useFetchApiKey } from "@/hooks/use-fetch-api-key";
-import { VAvatar, VButton, VLoading } from "@halo-dev/components";
+import type { WebpCloudResponse, WebpCloudUser } from "@/types";
+import { fetchApiKey } from "@/utils/fetch-api-key";
+import { VAvatar, VButton } from "@halo-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import ApiKeyBindingModal from "./ApiKeyBindingModal.vue";
 
 const tokenBindingModalVisible = ref(false);
 
-const { data: apiKey, isLoading } = useFetchApiKey();
-
-const { data: user, isFetching } = useQuery({
+const { data: user, suspense } = useQuery({
   queryKey: ["plugin-webp-se-cloud:user"],
   queryFn: async () => {
-    const { data } = await axios.get("https://webppt.webp.se/v1/user/info", {
-      headers: {
-        "api-key": apiKey.value,
+    const apiKey = await fetchApiKey();
+
+    if (!apiKey) {
+      return null;
+    }
+
+    const { data } = await axios.get<WebpCloudResponse<WebpCloudUser>>(
+      "https://webppt.webp.se/v1/user/info",
+      {
+        headers: {
+          "api-key": apiKey,
+        },
       },
-    });
+    );
     return data;
   },
   cacheTime: 0,
-  enabled: computed(() => !!apiKey.value),
 });
+
+await suspense();
 </script>
 
 <template>
-  <VLoading v-if="isLoading || isFetching" />
   <div
-    v-else
-    class="ring-gray-100 relative flex-wrap gap-2 flex justify-between items-center ring-1 p-2 hover:ring-inherit transition-all rounded-lg"
+    class="relative flex flex-wrap items-center justify-between gap-2 rounded-lg p-2 ring-1 ring-gray-100 transition-all hover:ring-inherit"
   >
     <div
       v-if="user?.data"
-      class="absolute -top-3 -right-3 bg-indigo-500 rounded-xl px-2 text-xs py-0.5 text-white"
+      class="absolute rounded-xl bg-indigo-500 px-2 py-0.5 text-xs text-white -right-3 -top-3"
     >
       {{ user.data.user_plan.toUpperCase() }}
     </div>
-    <div class="flex gap-3 items-center flex-wrap">
+    <div class="flex flex-wrap items-center gap-3">
       <VAvatar :src="user?.data?.avatar_url" size="lg" :alt="user?.data.name" />
       <div class="flex flex-col space-y-1">
         <span class="text-sm text-gray-900 font-semibold">
