@@ -104,7 +104,7 @@ async function onSubmit(data: { apiKeySecret: string }) {
 <template>
   <VModal
     ref="modal"
-    title="绑定 Api Key"
+    title="绑定 API Key"
     :width="600"
     height="50vh"
     mount-to-body
