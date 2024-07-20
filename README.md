@@ -2,28 +2,30 @@
 
 此插件提供对 WebP Cloud（<https://webp.se>）的集成，支持在文章页面无入侵式的自动替换图片为 WebP/AVIF 格式。
 
-## 使用
+## 特性
 
-### 在 [WebP Cloud Dashboard](https://dashboard.webp.se/proxy) 创建一个代理（Proxy）
+- 支持无入侵式的替换网站中所有的图片链接为 WebP/AVIF 格式的链接。
+- 简单方便的配置界面，配置好 <https://webp.se> 的 API Key 之后即可选择或创建代理地址。
 
-![Create a Proxy](./images/dashboard.webp.create_proxy.png)
+## 安装与使用
 
-创建完成之后，就可以看到你的 `Proxy Address` 了：
+1. 在[应用市场](https://www.halo.run/store/apps/app-fVJSY)中安装并启用此插件。
+2. 进入插件的设置页面，配置 API Key：
 
-![Demo Proxy](./images/dashboard.webp.proxy.png)
+   ![API Key](./images/api-key.png)
 
-## 下载并安装此插件
+3. 选择已有的代理配置或者创建新的：
 
-进入 [Releases](https://github.com/webp-sh/halo-plugin-webp-cloud/releases) 页面，选择最新版本下载 Assets 中的 `plugin-webp-cloud-xxx.jar` 文件即可。
+   ![Proxies](./images/proxies.png)
 
-安装插件的方式可以参考官方文档：<https://docs.halo.run/user-guide/plugins#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6>
+   ![Create a Proxy](./images/create-a-proxy.png)
 
-## 配置插件
+   > 请注意，如果你的网站图片是相对地址，那么你需要在源站地址中填写在 Halo 中配置好的外部访问地址，例如 `https://example.com`，这样插件才能正确的替换图片地址。
 
-安装完成之后，进入插件详情页面中的基础设置选项卡，填入你的 `Proxy Address`，保存即可。
+4. 最后保存即可。
 
-![Plugin Setting](./images/plugin-webp-se-cloud-setting.png)
+## 验证
 
-最后，进入任意一篇包含图片的文章，检查一下浏览器的 Network 面板，就可以看到图片的源地址已经修改为了你设置的 `Proxy Address` 了。
+进入任意一篇包含图片的文章，检查一下浏览器 Network 面板的图片请求地址，或者查看网页源代码，可以看到图片的源地址已经修改为了你设置的 `Proxy Address` 了。
 
 ![Effect](./images/effect.png)
