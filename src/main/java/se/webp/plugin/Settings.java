@@ -14,6 +14,15 @@ public class Settings {
     public static class BasicConfig {
         public static final String GROUP = "basic";
 
-        String proxy_address;
+        String apiKeySecret;
+
+        Proxy[] proxies;
+    }
+
+    @Data
+    public static class Proxy {
+        String origin_url;
+
+        String proxy_url;
     }
 }

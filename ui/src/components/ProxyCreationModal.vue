@@ -90,6 +90,7 @@ async function onSubmit(data: WebpCloudProxyFormState) {
     </FormKit>
     <template #footer>
       <VSpace>
+        <!-- @vue-ignore -->
         <VButton
           type="secondary"
           :loading="isSubmitting"

@@ -32,9 +32,11 @@ import run.halo.app.infra.ExternalUrlSupplier;
 import run.halo.app.infra.utils.PathUtils;
 import run.halo.app.plugin.ReactiveSettingFetcher;
 import run.halo.app.security.AdditionalWebFilter;
+import se.webp.plugin.Settings.Proxy;
 
 /**
- * This implementation references: https://github.com/guqing/plugin-cloudinary/blob/93f1eb999fa8db5682b13124fa74f0d00efa4d6f/src/main/java/io/github/guqing/cloudinary/DefaultImageOptimizer.java#L19
+ * This implementation references:
+ * https://github.com/guqing/plugin-cloudinary/blob/93f1eb999fa8db5682b13124fa74f0d00efa4d6f/src/main/java/io/github/guqing/cloudinary/DefaultImageOptimizer.java#L19
  */
 @Component
 @RequiredArgsConstructor
@@ -105,8 +107,14 @@ public class WebpCloudImageOptimizerWebFilter implements AdditionalWebFilter {
 
                         return Settings.getBasicConfig(settingFetcher)
                                 .flatMap(config -> {
-                                    var proxyAddress = config.getProxy_address();
-                                    var optimizedHtml = replaceImageSrc(html, proxyAddress);
+                                    var apiKeySecret = config.getApiKeySecret();
+                                    var proxies = config.getProxies();
+
+                                    if (apiKeySecret == null || proxies == null) {
+                                        return Mono.just(stringToByteBuffer(html));
+                                    }
+
+                                    var optimizedHtml = replaceImageSrc(html, proxies);
                                     var byteBuffer = stringToByteBuffer(optimizedHtml);
                                     return Mono.just(byteBuffer);
                                 });
@@ -115,26 +123,38 @@ public class WebpCloudImageOptimizerWebFilter implements AdditionalWebFilter {
             return super.writeWith(bodyWrap);
         }
 
-        private String replaceImageSrc(String html, String proxyAddress) {
+        private String replaceImageSrc(String html, Proxy[] proxies) {
             Document document = Jsoup.parse(html);
+            String externalUrl = externalUrlSupplier.get().toString();
 
             document.select("img").forEach(img -> {
                 String src = img.attr("src");
 
                 if (!PathUtils.isAbsoluteUri(src)) {
-                    img.attr("src", proxyAddress + src);
-                    return;
-                }
-
-                String externalUrl = externalUrlSupplier.get().toString();
-
-                if (src.startsWith(externalUrl)) {
-                    img.attr("src",
-                            proxyAddress + src.substring(externalUrl.length()));
+                    String proxyUrl = getProxyUrl(src, proxies, externalUrl);
+                    if (proxyUrl != null) {
+                        img.attr("src", proxyUrl + src);
+                    }
+                } else {
+                    for (Proxy proxy : proxies) {
+                        if (src.startsWith(proxy.getOrigin_url())) {
+                            img.attr("src", proxy.getProxy_url() + src.substring(proxy.getOrigin_url().length()));
+                            break;
+                        }
+                    }
                 }
             });
 
             return document.outerHtml();
+        }
+
+        private String getProxyUrl(String src, Proxy[] proxies, String externalUrl) {
+            for (Proxy proxy : proxies) {
+                if (proxy.getOrigin_url().equals(externalUrl)) {
+                    return proxy.getProxy_url();
+                }
+            }
+            return null;
         }
     }
 
