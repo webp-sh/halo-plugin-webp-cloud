@@ -11,6 +11,8 @@ import { Toast, VButton } from "@halo-dev/components";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import axios from "axios";
 import { ref, watch } from "vue";
+import ProxyCreationModal from "./ProxyCreationModal.vue";
+import ProxyListItem from "./ProxyListItem.vue";
 
 const queryClient = useQueryClient();
 
@@ -112,44 +114,32 @@ async function handleSave() {
 
   isSubmitting.value = false;
 }
+
+// Proxy creation
+const proxyCreationModalVisible = ref(false);
 </script>
 
 <template>
   <div v-if="proxies" class="mt-3 border-t border-gray-50 pt-3">
     <h2 class="text-sm text-gray-900 font-semibold">选择代理：</h2>
     <div class="mt-2 flex justify-end">
-      <VButton>新建</VButton>
+      <VButton @click="proxyCreationModalVisible = true">新建</VButton>
     </div>
     <div class="mt-3 flex flex-col space-y-2">
-      <label
+      <ProxyListItem
         v-for="proxy in proxies?.data"
         :key="proxy.proxy_uuid"
-        :for="proxy.proxy_uuid"
-        class="relative flex cursor-pointer rounded-lg p-3 ring-1 ring-gray-100 transition-all has-[:checked]:ring-inherit"
+        :proxy="proxy"
       >
-        <div class="min-w-0 flex flex-1 shrink flex-col space-y-1.5">
-          <span class="text-gray-900 font-semibold">
-            {{ proxy.proxy_name }}
-          </span>
-          <span class="text-xs text-gray-600">
-            代理地址：{{ proxy.proxy_proxy_url }}
-          </span>
-          <span class="text-xs text-gray-600">
-            源站地址：{{ proxy.proxy_origin_url }}
-          </span>
-          <span class="text-xs text-gray-600">
-            地区：{{ proxy.proxy_region }}
-          </span>
-        </div>
-        <div class="flex-none">
+        <template #checkbox>
           <input
             :id="proxy.proxy_uuid"
             v-model="selectedProxies"
             type="checkbox"
             :value="proxy.proxy_proxy_url"
           />
-        </div>
-      </label>
+        </template>
+      </ProxyListItem>
     </div>
 
     <div class="mt-5">
@@ -157,5 +147,10 @@ async function handleSave() {
         保存
       </VButton>
     </div>
+
+    <ProxyCreationModal
+      v-if="proxyCreationModalVisible"
+      @close="proxyCreationModalVisible = false"
+    />
   </div>
 </template>
