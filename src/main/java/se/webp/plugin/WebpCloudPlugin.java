@@ -1,21 +1,14 @@
 package se.webp.plugin;
 
-import org.pf4j.PluginWrapper;
 import org.springframework.stereotype.Component;
+
 import run.halo.app.plugin.BasePlugin;
+import run.halo.app.plugin.PluginContext;
 
 @Component
 public class WebpCloudPlugin extends BasePlugin {
 
-    public WebpCloudPlugin(PluginWrapper wrapper) {
-        super(wrapper);
-    }
-
-    @Override
-    public void start() {
-    }
-
-    @Override
-    public void stop() {
+    public WebpCloudPlugin(PluginContext content) {
+        super(content);
     }
 }

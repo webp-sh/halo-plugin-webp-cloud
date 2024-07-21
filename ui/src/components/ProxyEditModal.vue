@@ -1,0 +1,166 @@
+<script lang="ts" setup>
+import type {
+  WebpCloudProxy,
+  WebpCloudProxyEditFormState,
+  WebpCloudProxyStats,
+  WebpCloudResponse,
+} from "@/types";
+import { fetchApiKey } from "@/utils/fetch-api-key";
+import { Toast, VButton, VModal, VSpace } from "@halo-dev/components";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
+import axios, { AxiosError } from "axios";
+import { ref, toRefs } from "vue";
+
+const queryClient = useQueryClient();
+
+const props = withDefaults(defineProps<{ proxy: WebpCloudProxy }>(), {});
+
+const { proxy } = toRefs(props);
+
+const emit = defineEmits(["close"]);
+
+const modal = ref<InstanceType<typeof VModal> | null>(null);
+
+const { data: proxyStats, isLoading } = useQuery({
+  queryKey: ["plugin-webp-se-cloud:proxy-stats", proxy],
+  queryFn: async () => {
+    const apiKey = await fetchApiKey();
+    const { data } = await axios.get<WebpCloudResponse<WebpCloudProxyStats>>(
+      `https://webppt.webp.se/v1/proxy/${props.proxy.proxy_uuid}/stats`,
+      {
+        headers: {
+          "api-key": apiKey,
+        },
+      },
+    );
+    return data;
+  },
+});
+
+const isSubmitting = ref(false);
+
+async function onSubmit(data: WebpCloudProxyEditFormState) {
+  isSubmitting.value = true;
+
+  const apiKey = await fetchApiKey();
+
+  if (!apiKey) {
+    Toast.error("请先设置 webp.se 的 API Key");
+    return;
+  }
+
+  try {
+    await axios.put(
+      `https://webppt.webp.se/v1/proxy/${props.proxy.proxy_uuid}`,
+      data,
+      {
+        headers: {
+          "api-key": apiKey,
+        },
+      },
+    );
+
+    Toast.success("保存成功");
+
+    queryClient.invalidateQueries({
+      queryKey: ["plugin-webp-se-cloud:remote-proxies"],
+    });
+
+    modal.value?.close();
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      Toast.error(error.response?.data.messages);
+    } else {
+      Toast.error("保存失败，请稍后重试");
+    }
+  } finally {
+    isSubmitting.value = false;
+  }
+}
+</script>
+
+<template>
+  <VModal
+    mount-to-body
+    ref="modal"
+    :width="600"
+    title="编辑代理"
+    @close="emit('close')"
+  >
+    <FormKit
+      id="proxy-edit-form"
+      v-slot="{ value }"
+      type="form"
+      name="proxy-edit-form"
+      :disabled="isLoading"
+      @submit="onSubmit"
+    >
+      <FormKit
+        label="名称（Proxy Name）"
+        :model-value="proxyStats?.data.proxy_name"
+        name="proxy_name"
+      ></FormKit>
+      <FormKit
+        label="Proxy User Agent"
+        name="proxy_ua"
+        :model-value="proxyStats?.data.proxy_ua"
+      ></FormKit>
+      <FormKit
+        label="Proxy CORS Header"
+        name="proxy_cors_header"
+        :model-value="proxyStats?.data.proxy_cors_header"
+      ></FormKit>
+      <FormKit
+        label="Proxy Allowed Referer"
+        name="proxy_allowed_referer"
+        :model-value="proxyStats?.data.proxy_allowed_referer"
+      ></FormKit>
+      <FormKit
+        label="图片质量（Current Quality）"
+        name="proxy_quality"
+        type="range"
+        :value="80"
+        :max="100"
+        :min="10"
+        number
+        :help="`${value.proxy_quality}%`"
+        :model-value="proxyStats?.data.proxy_quality"
+      >
+      </FormKit>
+      <FormKit
+        type="repeater"
+        label="额外源站请求头（Extra Origin Fetch Headers）"
+        name="proxy_extra_headers"
+        :model-value="proxyStats?.data.proxy_extra_headers"
+        :max="5"
+      >
+        <FormKit
+          label="Header key"
+          name="key"
+          validation="required|length:1,100|not:host,referer,origin"
+        ></FormKit>
+        <FormKit
+          label="Header value"
+          name="value"
+          validation="required|length:1,100"
+        >
+        </FormKit>
+      </FormKit>
+      <FormKit type="hidden" name="proxy_enabled" :value="true"></FormKit>
+    </FormKit>
+    <template #footer>
+      <VSpace>
+        <!-- @vue-ignore -->
+        <VButton
+          type="secondary"
+          :loading="isSubmitting"
+          :disabled="isLoading"
+          @click="$formkit.submit('proxy-edit-form')"
+        >
+          保存
+        </VButton>
+        <VButton @click="modal?.close()">关闭</VButton>
+      </VSpace>
+    </template>
+  </VModal>
+</template>

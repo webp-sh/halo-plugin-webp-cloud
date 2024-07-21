@@ -3,7 +3,7 @@ kind: ExtensionDefinition
 metadata:
   name: webp-se-cloud-image-filter
 spec:
-  className: se.webp.plugin.WebpCloudPostContentHandler
-  extensionPointName: reactive-post-content-handler
-  displayName: "WebpCloudPostContentHandler"
-  description: "Webp.se Cloud Services"
+  className: se.webp.plugin.WebpCloudImageOptimizerWebFilter
+  extensionPointName: additional-webfilter
+  displayName: "WebP Cloud Services"
+  description: "集成 WebP Cloud Services 服务，支持无入侵式的替换网站图片地址为 WebP 格式图片地址。"

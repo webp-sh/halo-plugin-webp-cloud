@@ -1,7 +1,8 @@
 plugins {
     id 'java'
+    id "com.github.node-gradle.node" version "7.0.2"
     id "io.freefair.lombok" version "8.0.1"
-    id "run.halo.plugin.devtools" version "0.0.5"
+    id "run.halo.plugin.devtools" version "0.0.9"
 }
 
 group 'se.webp.plugin'
@@ -15,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation platform('run.halo.tools.platform:plugin:2.8.0-SNAPSHOT')
+    implementation platform('run.halo.tools.platform:plugin:2.13.0-SNAPSHOT')
     compileOnly 'run.halo.app:api'
 
     testImplementation 'run.halo.app:api'
@@ -24,4 +25,30 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+
+node {
+    nodeProjectDir = file("${project.projectDir}/ui")
+}
+
+tasks.register('buildFrontend', PnpmTask) {
+    args = ['build']
+    dependsOn('installDepsForUI')
+}
+
+tasks.register('installDepsForUI', PnpmTask) {
+    args = ['install']
+}
+
+build {
+    // build frontend before build
+    tasks.named('compileJava').configure {
+        dependsOn('buildFrontend')
+    }
+}
+
+halo {
+    imageName = "docker.1panel.live/halohub/halo"
+    version = "2.17"
 }
