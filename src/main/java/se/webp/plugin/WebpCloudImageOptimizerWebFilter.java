@@ -106,6 +106,7 @@ public class WebpCloudImageOptimizerWebFilter implements AdditionalWebFilter {
                         var html = byteBuffersToString(byteBuffers);
 
                         return Settings.getBasicConfig(settingFetcher)
+                                .switchIfEmpty(Mono.just(new Settings.BasicConfig()))
                                 .flatMap(config -> {
                                     var apiKeySecret = config.getApiKeySecret();
                                     var proxies = config.getProxies();
@@ -125,15 +126,18 @@ public class WebpCloudImageOptimizerWebFilter implements AdditionalWebFilter {
 
         private String replaceImageSrc(String html, Proxy[] proxies) {
             Document document = Jsoup.parse(html);
-            String externalUrl = externalUrlSupplier.get().toString();
+            var externalUrl = externalUrlSupplier.getRaw();
 
             document.select("img").forEach(img -> {
                 String src = img.attr("src");
 
                 if (!PathUtils.isAbsoluteUri(src)) {
-                    String proxyUrl = getProxyUrl(src, proxies, externalUrl);
-                    if (proxyUrl != null) {
-                        img.attr("src", proxyUrl + src);
+                    if (externalUrl != null) {
+                        String proxyUrl = getProxyUrl(proxies, externalUrl.toString());
+
+                        if (proxyUrl != null) {
+                            img.attr("src", proxyUrl + src);
+                        }
                     }
                 } else {
                     for (Proxy proxy : proxies) {
@@ -148,7 +152,7 @@ public class WebpCloudImageOptimizerWebFilter implements AdditionalWebFilter {
             return document.outerHtml();
         }
 
-        private String getProxyUrl(String src, Proxy[] proxies, String externalUrl) {
+        private String getProxyUrl(Proxy[] proxies, String externalUrl) {
             for (Proxy proxy : proxies) {
                 if (proxy.getOrigin_url().equals(externalUrl)) {
                     return proxy.getProxy_url();

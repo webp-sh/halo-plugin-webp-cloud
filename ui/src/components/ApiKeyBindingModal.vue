@@ -48,7 +48,8 @@ async function onSubmit(data: { apiKeySecret: string }) {
       const configMapToCreate: ConfigMap = {
         data: {
           basic: JSON.stringify({
-            basic: { apiKeySecret: data.apiKeySecret, proxies: [] },
+            apiKeySecret: data.apiKeySecret,
+            proxies: [],
           }),
         },
         apiVersion: "v1alpha1",
