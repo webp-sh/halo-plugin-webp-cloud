@@ -52,7 +52,7 @@ export interface WebpCloudProxyStats {
   proxy_cache_size: number;
   proxy_cache_size_limit: number;
   proxy_enabled: boolean;
-  proxy_operation_on_disabled: string;
+  proxy_operation_on_disabled: "redirect" | "deny" | "placeholder";
   proxy_created_at: string;
   proxy_enable_extra_params: boolean;
   proxy_visual_effects: any[];
@@ -63,6 +63,9 @@ export interface WebpCloudProxyStats {
   proxy_daily_bytes_sent: ProxyDailyBytesSent[];
   proxy_last_logs: any[];
   proxy_custom_domain: any[];
+  proxy_adaptive_resize: boolean;
+  proxy_adaptive_resize_desktop_width: number;
+  proxy_adaptive_resize_mobile_width: number;
 }
 
 export interface ProxyDailyBytesSent {
@@ -86,6 +89,10 @@ export interface WebpCloudProxyEditFormState {
   proxy_cors_header: string;
   proxy_allowed_referer: string;
   proxy_extra_headers: ProxyExtraHeader[];
+  proxy_adaptive_resize: boolean;
+  proxy_adaptive_resize_desktop_width: number;
+  proxy_adaptive_resize_mobile_width: number;
+  proxy_operation_on_disabled: "redirect" | "deny" | "placeholder";
 }
 
 export interface ProxyExtraHeader {
