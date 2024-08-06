@@ -81,8 +81,8 @@ async function onSubmit(data: WebpCloudProxyEditFormState) {
 
 <template>
   <VModal
-    mount-to-body
     ref="modal"
+    mount-to-body
     :width="600"
     title="编辑代理"
     @close="emit('close')"
@@ -146,6 +146,60 @@ async function onSubmit(data: WebpCloudProxyEditFormState) {
         >
         </FormKit>
       </FormKit>
+      <FormKit
+        help="当代理被禁用时（手动或因为你的配额已用完），你可以指定后续请求处理方式"
+        :model-value="proxyStats?.data.proxy_operation_on_disabled"
+        name="proxy_operation_on_disabled"
+        label="不可用时的处理方式"
+        type="select"
+        value="redirect"
+        :options="[
+          {
+            value: 'redirect',
+            label: '重定向至源图片',
+          },
+          {
+            value: 'deny',
+            label: '阻止访问，返回 403',
+          },
+          {
+            value: 'placeholder',
+            label: '占位图',
+          },
+        ]"
+      ></FormKit>
+
+      <FormKit
+        label="自适应图片大小"
+        name="proxy_adaptive_resize"
+        :value="false"
+        :model-value="proxyStats?.data.proxy_adaptive_resize"
+        type="checkbox"
+      ></FormKit>
+
+      <FormKit
+        v-if="value.proxy_adaptive_resize"
+        label="桌面端最大宽度"
+        help="单位为像素（px）"
+        name="proxy_adaptive_resize_desktop_width"
+        :value="1600"
+        :model-value="proxyStats?.data.proxy_adaptive_resize_desktop_width"
+        type="number"
+        number
+        validation="required"
+      ></FormKit>
+
+      <FormKit
+        v-if="value.proxy_adaptive_resize"
+        label="移动端最大宽度"
+        help="单位为像素（px）"
+        name="proxy_adaptive_resize_mobile_width"
+        :value="800"
+        :model-value="proxyStats?.data.proxy_adaptive_resize_mobile_width"
+        type="number"
+        number
+        validation="required"
+      ></FormKit>
       <FormKit type="hidden" name="proxy_enabled" :value="true"></FormKit>
     </FormKit>
     <template #footer>
