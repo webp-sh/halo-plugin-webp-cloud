@@ -1,4 +1,4 @@
-package se.webp.plugin;
+package se.webp.plugin.halo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.net.URL;

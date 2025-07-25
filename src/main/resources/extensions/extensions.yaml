@@ -2,6 +2,8 @@ apiVersion: plugin.halo.run/v1alpha1
 kind: ExtensionDefinition
 metadata:
   name: webp-se-cloud-image-filter
+  # mark the extension as deprecated, remove this definition in the future
+  deletionTimestamp: "2025-07-25T00:00:00Z"
 spec:
   className: se.webp.plugin.WebpCloudImageOptimizerWebFilter
   extensionPointName: additional-webfilter
