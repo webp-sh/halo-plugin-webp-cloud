@@ -13,6 +13,7 @@ import axios from "axios";
 import { ref, watch } from "vue";
 import ProxyCreationModal from "./ProxyCreationModal.vue";
 import ProxyListItem from "./ProxyListItem.vue";
+import { PLUGIN_NAME } from "@/constant";
 
 const queryClient = useQueryClient();
 
@@ -25,17 +26,22 @@ const { data: proxies, suspense } = useQuery({
       return null;
     }
 
-    const { data } = await axios.get<WebpCloudResponse<WebpCloudProxy[]>>(
-      "https://webppt.webp.se/v1/proxy",
-      {
-        headers: {
-          "api-key": apiKey,
+    try {
+      const { data } = await axios.get<WebpCloudResponse<WebpCloudProxy[]>>(
+        "https://webppt.webp.se/v1/proxy",
+        {
+          headers: {
+            "api-key": apiKey,
+          },
         },
-      },
-    );
-    return data;
+      );
+      return data;
+    } catch (error) {
+      return null;
+    }
   },
   cacheTime: 0,
+  retry: false,
 });
 
 await suspense();
@@ -45,16 +51,19 @@ const selectedProxies = ref<string[]>([]);
 const { data: storedProxies } = useQuery({
   queryKey: ["plugin-webp-se-cloud:stored-proxies"],
   queryFn: async () => {
-    const { data: configMap } =
-      await consoleApiClient.plugin.plugin.fetchPluginConfig({
-        name: "plugin-webp-se-cloud",
-      });
+    const { data } = await consoleApiClient.plugin.plugin.fetchPluginJsonConfig(
+      {
+        name: PLUGIN_NAME,
+      },
+    );
 
-    const configMapData = JSON.parse(
-      configMap.data?.["basic"] || "{}",
-    ) as PluginConfigMapBasic;
+    const configMap = data as any;
 
-    return configMapData["proxies"] || [];
+    if (!configMap?.basic) {
+      return [];
+    }
+
+    return (configMap as any).basic.proxies || [];
   },
 });
 
@@ -85,24 +94,19 @@ async function handleSave() {
     })) as PluginConfigMapProxy[];
 
   const { data: configMapToUpdate } =
-    await consoleApiClient.plugin.plugin.fetchPluginConfig({
-      name: "plugin-webp-se-cloud",
+    await consoleApiClient.plugin.plugin.fetchPluginJsonConfig({
+      name: PLUGIN_NAME,
     });
 
-  const configMapData = JSON.parse(
-    configMapToUpdate.data?.["basic"] || "{}",
-  ) as PluginConfigMapBasic;
+  const configMapData = (configMapToUpdate as any).basic;
 
-  configMapData["proxies"] = proxiesToSave;
+  configMapData.proxies = proxiesToSave;
 
-  await consoleApiClient.plugin.plugin.updatePluginConfig({
-    name: "plugin-webp-se-cloud",
-    configMap: {
+  await consoleApiClient.plugin.plugin.updatePluginJsonConfig({
+    name: PLUGIN_NAME,
+    body: {
       ...configMapToUpdate,
-      data: {
-        ...configMapToUpdate.data,
-        basic: JSON.stringify(configMapData),
-      },
+      basic: configMapData,
     },
   });
 

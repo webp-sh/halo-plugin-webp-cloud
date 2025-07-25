@@ -18,17 +18,22 @@ const { data: user, suspense } = useQuery({
       return null;
     }
 
-    const { data } = await axios.get<WebpCloudResponse<WebpCloudUser>>(
-      "https://webppt.webp.se/v1/user/info",
-      {
-        headers: {
-          "api-key": apiKey,
+    try {
+      const { data } = await axios.get<WebpCloudResponse<WebpCloudUser>>(
+        "https://webppt.webp.se/v1/user/info",
+        {
+          headers: {
+            "api-key": apiKey,
+          },
         },
-      },
-    );
-    return data;
+      );
+      return data;
+    } catch (error) {
+      return null;
+    }
   },
   cacheTime: 0,
+  retry: false,
 });
 
 await suspense();
