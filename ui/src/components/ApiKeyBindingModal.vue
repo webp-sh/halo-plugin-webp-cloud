@@ -1,10 +1,6 @@
 <script lang="ts" setup>
-import type { PluginConfigMapBasic } from "@/types";
-import {
-  consoleApiClient,
-  coreApiClient,
-  type ConfigMap,
-} from "@halo-dev/api-client";
+import { PLUGIN_NAME } from "@/constant";
+import { consoleApiClient } from "@halo-dev/api-client";
 import { Toast, VButton, VModal, VSpace } from "@halo-dev/components";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, ref } from "vue";
@@ -15,26 +11,28 @@ const modal = ref<InstanceType<typeof VModal> | null>(null);
 
 const emit = defineEmits(["close"]);
 
-const { data: configMap } = useQuery({
+const { data: basicConfigMap } = useQuery({
   queryKey: ["plugin-webp-se-cloud:configMap"],
   queryFn: async () => {
-    const { data } = await consoleApiClient.plugin.plugin.fetchPluginConfig(
+    const { data } = await consoleApiClient.plugin.plugin.fetchPluginJsonConfig(
       {
-        name: "plugin-webp-se-cloud",
+        name: PLUGIN_NAME,
       },
       {
         mute: true,
       },
     );
-    return data;
+
+    if (!data) {
+      return;
+    }
+
+    return (data as any).basic;
   },
 });
 
 const storedApiKeySecret = computed(() => {
-  const configMapData = JSON.parse(
-    configMap.value?.data?.["basic"] || "{}",
-  ) as PluginConfigMapBasic;
-  return configMapData["apiKeySecret"];
+  return basicConfigMap.value?.apiKeySecret;
 });
 
 const isSubmitting = ref(false);
@@ -43,44 +41,20 @@ async function onSubmit(data: { apiKeySecret: string }) {
   try {
     isSubmitting.value = true;
 
-    if (!configMap.value) {
-      // Create a new configMap
-      const configMapToCreate: ConfigMap = {
-        data: {
-          basic: JSON.stringify({
-            apiKeySecret: data.apiKeySecret,
-            proxies: [],
-          }),
-        },
-        apiVersion: "v1alpha1",
-        kind: "ConfigMap",
-        metadata: {
-          name: "plugin-webp-se-cloud-configmap",
-        },
-      };
+    const { data: configMapToUpdate } = await consoleApiClient.plugin.plugin.fetchPluginJsonConfig({
+      name: PLUGIN_NAME,
+    });
 
-      await coreApiClient.configMap.createConfigMap({
-        configMap: configMapToCreate,
-      });
-    } else {
-      const { data: configMapToUpdate } =
-        await consoleApiClient.plugin.plugin.fetchPluginConfig({
-          name: "plugin-webp-se-cloud",
-        });
-      const basicConfig = JSON.parse(
-        configMapToUpdate?.data?.["basic"] || "{}",
-      ) as PluginConfigMapBasic;
-      basicConfig.apiKeySecret = data.apiKeySecret;
-      configMapToUpdate.data = {
-        ...configMapToUpdate.data,
-        basic: JSON.stringify(basicConfig),
-      };
-
-      await consoleApiClient.plugin.plugin.updatePluginConfig({
-        name: "plugin-webp-se-cloud",
-        configMap: configMapToUpdate,
-      });
-    }
+    await consoleApiClient.plugin.plugin.updatePluginJsonConfig({
+      name: "plugin-webp-se-cloud",
+      body: {
+        ...configMapToUpdate,
+        basic: {
+          ...(configMapToUpdate as any).basic,
+          apiKeySecret: data.apiKeySecret,
+        },
+      },
+    });
 
     queryClient.invalidateQueries({
       queryKey: ["plugin-webp-se-cloud:user"],

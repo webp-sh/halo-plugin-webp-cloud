@@ -1,7 +1,7 @@
-package se.webp.plugin;
+package se.webp.plugin.halo;
 
 import static org.thymeleaf.templatemode.TemplateMode.HTML;
-import static se.webp.plugin.Settings.BasicConfig.GROUP;
+import static se.webp.plugin.halo.Settings.BasicConfig.GROUP;
 
 import java.net.URI;
 import java.net.URL;

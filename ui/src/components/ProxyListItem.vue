@@ -7,10 +7,7 @@ import ProxyEditModal from "./ProxyEditModal.vue";
 const props = withDefaults(defineProps<{ proxy: WebpCloudProxy }>(), {});
 
 function openDetailPage() {
-  window.open(
-    `https://dashboard.webp.se/proxy/${props.proxy.proxy_uuid}`,
-    "_blank",
-  );
+  window.open(`https://dashboard.webp.se/proxy/${props.proxy.proxy_uuid}`, "_blank");
 }
 
 const proxyEditModalVisible = ref(false);
@@ -19,42 +16,32 @@ const proxyEditModalVisible = ref(false);
 <template>
   <label
     :for="proxy.proxy_uuid"
-    class="relative flex flex-col cursor-pointer rounded-lg p-3 ring-1 ring-gray-100 transition-all has-[:checked]:ring-inherit"
+    class=":uno: relative flex flex-col cursor-pointer rounded-lg p-3 ring-1 ring-gray-100 transition-all has-[:checked]:ring-inherit"
     @click.stop
   >
-    <div class="flex flex-col space-y-1.5 w-full">
-      <span class="text-gray-900 font-semibold">
+    <div class=":uno: w-full flex flex-col space-y-1.5">
+      <span class=":uno: text-gray-900 font-semibold">
         {{ proxy.proxy_name }}
       </span>
-      <span class="text-xs text-gray-600">
-        代理地址：{{ proxy.proxy_proxy_url }}
-      </span>
-      <span class="text-xs text-gray-600">
-        源站地址：{{ proxy.proxy_origin_url }}
-      </span>
-      <span class="text-xs text-gray-600">
-        地区：{{ proxy.proxy_region }}
-      </span>
+      <span class=":uno: text-xs text-gray-600"> 代理地址：{{ proxy.proxy_proxy_url }} </span>
+      <span class=":uno: text-xs text-gray-600"> 源站地址：{{ proxy.proxy_origin_url }} </span>
+      <span class=":uno: text-xs text-gray-600"> 地区：{{ proxy.proxy_region }} </span>
     </div>
-    <div class="flex justify-end">
+    <div class=":uno: flex justify-end">
       <VSpace>
         <button
-          class="btn-sm btn-default btn"
+          class=":uno: btn-sm btn-default btn"
           type="button"
           @click.prevent="proxyEditModalVisible = true"
         >
-          <span class="btn-content"> 编辑 </span>
+          <span class=":uno: btn-content"> 编辑 </span>
         </button>
-        <button
-          class="btn-sm btn-default btn"
-          type="button"
-          @click.prevent="openDetailPage"
-        >
-          <span class="btn-content"> 详情 </span>
+        <button class=":uno: btn-sm btn-default btn" type="button" @click.prevent="openDetailPage">
+          <span class=":uno: btn-content"> 详情 </span>
         </button>
       </VSpace>
     </div>
-    <div class="absolute right-3 top-3">
+    <div class=":uno: absolute right-3 top-3">
       <slot name="checkbox" />
     </div>
 

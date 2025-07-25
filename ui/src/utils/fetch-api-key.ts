@@ -1,17 +1,16 @@
+import { PLUGIN_NAME } from "@/constant";
 import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
 
 export async function fetchApiKey(): Promise<string | undefined> {
-  const { data: configMap } =
-    await consoleApiClient.plugin.plugin.fetchPluginConfig({
-      name: "plugin-webp-se-cloud",
-    });
+  const { data: configMap } = await consoleApiClient.plugin.plugin.fetchPluginJsonConfig({
+    name: PLUGIN_NAME,
+  });
 
   if (!configMap) {
     return undefined;
   }
 
-  const configMapData = JSON.parse(configMap.data?.["basic"] || "{}");
-  const apiKeySecret = configMapData.apiKeySecret;
+  const apiKeySecret = (configMap as any)?.basic?.apiKeySecret;
 
   if (!apiKeySecret) {
     return undefined;

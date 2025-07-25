@@ -1,6 +1,7 @@
 import { definePlugin } from "@halo-dev/console-shared";
-import { markRaw } from "vue";
-import SettingsTab from "./components/SettingsTab.vue";
+import { defineAsyncComponent } from "vue";
+import "uno.css";
+import { VLoading } from "@halo-dev/components";
 
 export default definePlugin({
   components: {},
@@ -11,7 +12,10 @@ export default definePlugin({
         {
           id: "webp-se-settings",
           label: "WebP Cloud 服务设置",
-          component: markRaw(SettingsTab),
+          component: defineAsyncComponent({
+            loader: () => import("./components/SettingsTab.vue"),
+            loadingComponent: VLoading,
+          }),
           permissions: ["*"],
         },
       ];

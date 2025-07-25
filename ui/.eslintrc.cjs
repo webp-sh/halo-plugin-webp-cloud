@@ -18,5 +18,6 @@ module.exports = {
   },
   rules: {
     "@typescript-eslint/no-explicit-any": "off",
+    "@unocss/enforce-class-compile": 1,
   },
 };

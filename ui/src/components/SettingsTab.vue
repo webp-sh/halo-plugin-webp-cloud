@@ -5,7 +5,7 @@ import ProxiesSettingSection from "./ProxiesSettingSection.vue";
 </script>
 
 <template>
-  <div class="rounded-b-base max-w-md bg-white p-4">
+  <div class=":uno: rounded-b-base max-w-md bg-white p-4">
     <Suspense>
       <template #default>
         <AccountSection />

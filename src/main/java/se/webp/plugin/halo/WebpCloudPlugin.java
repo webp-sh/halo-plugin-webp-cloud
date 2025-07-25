@@ -1,4 +1,4 @@
-package se.webp.plugin;
+package se.webp.plugin.halo;
 
 import org.springframework.stereotype.Component;
 
