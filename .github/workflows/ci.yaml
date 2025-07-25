@@ -14,5 +14,5 @@ jobs:
     with:
       ui-path: "ui"
       node-version: "20"
-      pnpm-version: "9"
+      pnpm-version: "10"
       java-version: "21"
