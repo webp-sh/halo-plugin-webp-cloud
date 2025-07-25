@@ -41,10 +41,9 @@ async function onSubmit(data: { apiKeySecret: string }) {
   try {
     isSubmitting.value = true;
 
-    const { data: configMapToUpdate } =
-      await consoleApiClient.plugin.plugin.fetchPluginJsonConfig({
-        name: PLUGIN_NAME,
-      });
+    const { data: configMapToUpdate } = await consoleApiClient.plugin.plugin.fetchPluginJsonConfig({
+      name: PLUGIN_NAME,
+    });
 
     await consoleApiClient.plugin.plugin.updatePluginJsonConfig({
       name: "plugin-webp-se-cloud",

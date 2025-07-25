@@ -2,10 +2,9 @@ import { PLUGIN_NAME } from "@/constant";
 import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
 
 export async function fetchApiKey(): Promise<string | undefined> {
-  const { data: configMap } =
-    await consoleApiClient.plugin.plugin.fetchPluginJsonConfig({
-      name: PLUGIN_NAME,
-    });
+  const { data: configMap } = await consoleApiClient.plugin.plugin.fetchPluginJsonConfig({
+    name: PLUGIN_NAME,
+  });
 
   if (!configMap) {
     return undefined;

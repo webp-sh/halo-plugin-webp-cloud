@@ -52,12 +52,7 @@ async function onSubmit(data: WebpCloudProxyFormState) {
 
 <template>
   <VModal ref="modal" :width="600" title="创建代理" @close="emit('close')">
-    <FormKit
-      id="proxy-creation-form"
-      type="form"
-      name="proxy-creation-form"
-      @submit="onSubmit"
-    >
+    <FormKit id="proxy-creation-form" type="form" name="proxy-creation-form" @submit="onSubmit">
       <FormKit
         label="区域（Proxy Region）"
         name="proxy_region"

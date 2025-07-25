@@ -1,10 +1,5 @@
 <script lang="ts" setup>
-import type {
-  PluginConfigMapBasic,
-  PluginConfigMapProxy,
-  WebpCloudProxy,
-  WebpCloudResponse,
-} from "@/types";
+import type { PluginConfigMapProxy, WebpCloudProxy, WebpCloudResponse } from "@/types";
 import { fetchApiKey } from "@/utils/fetch-api-key";
 import { consoleApiClient } from "@halo-dev/api-client";
 import { Toast, VButton } from "@halo-dev/components";
@@ -51,11 +46,9 @@ const selectedProxies = ref<string[]>([]);
 const { data: storedProxies } = useQuery({
   queryKey: ["plugin-webp-se-cloud:stored-proxies"],
   queryFn: async () => {
-    const { data } = await consoleApiClient.plugin.plugin.fetchPluginJsonConfig(
-      {
-        name: PLUGIN_NAME,
-      },
-    );
+    const { data } = await consoleApiClient.plugin.plugin.fetchPluginJsonConfig({
+      name: PLUGIN_NAME,
+    });
 
     const configMap = data as any;
 
@@ -85,18 +78,15 @@ async function handleSave() {
   isSubmitting.value = true;
 
   const proxiesToSave = proxies.value?.data
-    .filter((proxy: WebpCloudProxy) =>
-      selectedProxies.value.includes(proxy.proxy_proxy_url),
-    )
+    .filter((proxy: WebpCloudProxy) => selectedProxies.value.includes(proxy.proxy_proxy_url))
     .map((proxy: WebpCloudProxy) => ({
       proxy_url: proxy.proxy_proxy_url,
       origin_url: proxy.proxy_origin_url,
     })) as PluginConfigMapProxy[];
 
-  const { data: configMapToUpdate } =
-    await consoleApiClient.plugin.plugin.fetchPluginJsonConfig({
-      name: PLUGIN_NAME,
-    });
+  const { data: configMapToUpdate } = await consoleApiClient.plugin.plugin.fetchPluginJsonConfig({
+    name: PLUGIN_NAME,
+  });
 
   const configMapData = (configMapToUpdate as any).basic;
 
@@ -124,17 +114,13 @@ const proxyCreationModalVisible = ref(false);
 </script>
 
 <template>
-  <div v-if="proxies" class="mt-3 border-t border-gray-50 pt-3">
-    <h2 class="text-sm text-gray-900 font-semibold">选择代理：</h2>
-    <div class="mt-2 flex justify-end">
+  <div v-if="proxies" class=":uno: mt-3 border-t border-gray-50 pt-3">
+    <h2 class=":uno: text-sm text-gray-900 font-semibold">选择代理：</h2>
+    <div class=":uno: mt-2 flex justify-end">
       <VButton @click="proxyCreationModalVisible = true">新建</VButton>
     </div>
-    <div class="mt-3 flex flex-col space-y-2">
-      <ProxyListItem
-        v-for="proxy in proxies?.data"
-        :key="proxy.proxy_uuid"
-        :proxy="proxy"
-      >
+    <div class=":uno: mt-3 flex flex-col space-y-2">
+      <ProxyListItem v-for="proxy in proxies?.data" :key="proxy.proxy_uuid" :proxy="proxy">
         <template #checkbox>
           <input
             :id="proxy.proxy_uuid"
@@ -146,10 +132,8 @@ const proxyCreationModalVisible = ref(false);
       </ProxyListItem>
     </div>
 
-    <div class="mt-5">
-      <VButton type="secondary" :loading="isSubmitting" @click="handleSave">
-        保存
-      </VButton>
+    <div class=":uno: mt-5">
+      <VButton type="secondary" :loading="isSubmitting" @click="handleSave"> 保存 </VButton>
     </div>
 
     <ProxyCreationModal

@@ -50,15 +50,11 @@ async function onSubmit(data: WebpCloudProxyEditFormState) {
   }
 
   try {
-    await axios.put(
-      `https://webppt.webp.se/v1/proxy/${props.proxy.proxy_uuid}`,
-      data,
-      {
-        headers: {
-          "api-key": apiKey,
-        },
+    await axios.put(`https://webppt.webp.se/v1/proxy/${props.proxy.proxy_uuid}`, data, {
+      headers: {
+        "api-key": apiKey,
       },
-    );
+    });
 
     Toast.success("保存成功");
 
@@ -80,13 +76,7 @@ async function onSubmit(data: WebpCloudProxyEditFormState) {
 </script>
 
 <template>
-  <VModal
-    ref="modal"
-    mount-to-body
-    :width="600"
-    title="编辑代理"
-    @close="emit('close')"
-  >
+  <VModal ref="modal" mount-to-body :width="600" title="编辑代理" @close="emit('close')">
     <FormKit
       id="proxy-edit-form"
       v-slot="{ value }"
@@ -139,12 +129,7 @@ async function onSubmit(data: WebpCloudProxyEditFormState) {
           name="key"
           validation="required|length:1,100|not:host,referer,origin"
         ></FormKit>
-        <FormKit
-          label="Header value"
-          name="value"
-          validation="required|length:1,100"
-        >
-        </FormKit>
+        <FormKit label="Header value" name="value" validation="required|length:1,100"> </FormKit>
       </FormKit>
       <FormKit
         help="当代理被禁用时（手动或因为你的配额已用完），你可以指定后续请求处理方式"
@@ -200,7 +185,9 @@ async function onSubmit(data: WebpCloudProxyEditFormState) {
         number
         validation="required"
       ></FormKit>
+      <!-- @unocss-skip-start -->
       <FormKit type="hidden" name="proxy_enabled" :value="true"></FormKit>
+      <!-- @unocss-skip-end -->
     </FormKit>
     <template #footer>
       <VSpace>

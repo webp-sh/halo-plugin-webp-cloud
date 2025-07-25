@@ -41,21 +41,21 @@ await suspense();
 
 <template>
   <div
-    class="relative flex flex-wrap items-center justify-between gap-2 rounded-lg p-2 ring-1 ring-gray-100 transition-all hover:ring-inherit"
+    class=":uno: relative flex flex-wrap items-center justify-between gap-2 rounded-lg p-2 ring-1 ring-gray-100 transition-all hover:ring-inherit"
   >
     <div
       v-if="user?.data"
-      class="absolute rounded-xl bg-indigo-500 px-2 py-0.5 text-xs text-white -right-3 -top-3"
+      class=":uno: absolute rounded-xl bg-indigo-500 px-2 py-0.5 text-xs text-white -right-3 -top-3"
     >
       {{ user.data.user_plan.toUpperCase() }}
     </div>
-    <div class="flex flex-wrap items-center gap-3">
+    <div class=":uno: flex flex-wrap items-center gap-3">
       <VAvatar :src="user?.data?.avatar_url" size="lg" :alt="user?.data.name" />
-      <div class="flex flex-col space-y-1">
-        <span class="text-sm text-gray-900 font-semibold">
+      <div class=":uno: flex flex-col space-y-1">
+        <span class=":uno: text-sm text-gray-900 font-semibold">
           {{ user?.data.name || "请先绑定 webp.se 的帐号" }}
         </span>
-        <span class="text-xs text-gray-600">
+        <span class=":uno: text-xs text-gray-600">
           {{ user?.data.user_uuid || "--" }}
         </span>
       </div>
@@ -67,8 +67,5 @@ await suspense();
     </div>
   </div>
 
-  <ApiKeyBindingModal
-    v-if="tokenBindingModalVisible"
-    @close="tokenBindingModalVisible = false"
-  />
+  <ApiKeyBindingModal v-if="tokenBindingModalVisible" @close="tokenBindingModalVisible = false" />
 </template>
