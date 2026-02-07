@@ -93,7 +93,7 @@ async function onSubmit(data: { apiKeySecret: string }) {
     >
       <FormKit
         type="secret"
-        required-key="apiKey"
+        :required-keys="[{ key: 'apiKey', help: '请输入有效的 API Key' }]"
         :model-value="storedApiKeySecret"
         name="apiKeySecret"
         label="API Key"
