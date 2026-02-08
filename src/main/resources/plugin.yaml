@@ -2,6 +2,8 @@ apiVersion: plugin.halo.run/v1alpha1
 kind: Plugin
 metadata:
   name: plugin-webp-se-cloud
+  annotations:
+    "store.halo.run/app-id": "app-fVJSY"
 spec:
   enabled: true
   requires: ">=2.22.10"

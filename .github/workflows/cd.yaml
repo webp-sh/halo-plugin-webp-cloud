@@ -17,3 +17,4 @@ jobs:
       pnpm-version: "10"
       java-version: "21"
       ui-path: "ui"
+      app-id: "app-fVJSY"
