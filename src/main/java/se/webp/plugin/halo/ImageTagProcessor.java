@@ -74,7 +74,7 @@ public class ImageTagProcessor implements ElementTagPostProcessor {
             .filter(proxy -> urlMatches(externalUrl, proxy.getOriginUrl()))
             .next()
             .map(proxy -> {
-                var srcBuilder = UriComponentsBuilder.fromHttpUrl(proxy.getProxyUrl().toString())
+                var srcBuilder = UriComponentsBuilder.fromUriString(proxy.getProxyUrl().toString())
                     .path(srcValue.get().getPath())
                     .query(srcValue.get().getQuery())
                     .fragment(srcValue.get().getFragment());
